@@ -1,0 +1,8 @@
+environment_tag = "environment_tag"
+aws_access_key  = "aws_access_key"
+aws_secret_key  = "aws_secret_key"
+aws_region      = "aws_region"
+aws_account     = "aws_account"
+domain_name     = "domain_name"
+bucket_name     = "bucket_name"
+common_tags     = "common_tags"

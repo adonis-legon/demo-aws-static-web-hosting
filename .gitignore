@@ -1,0 +1,5 @@
+*.auto.tfvars
+!env-template.auto.tfvars
+terraform/.terraform/providers
+terraform/.terraform/modules
+terraform/terraform.tfstate.d

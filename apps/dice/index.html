@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Dice App</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</head>
+<body>           
+    <div class="container">
+        <label>Seleccione el juego</label>
+        <select class="browser-default" id="selectGame">
+        </select>
+        <h2 class="header center" id="headerGame">Juega Jenga!</h2>
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content center">
+                <div class="jenga-circle-container">
+                    <div class="jenga-circle white" id="divJenga"></div>
+                </div>
+                <div class="dice-container">
+                    <div class="dice dice-no-face" id="diceFace0">
+                    </div>
+
+                    <div class="dice dice-first-face" id="diceFace1">
+                        <span class="dice-dot"></span>
+                    </div>
+                    
+                    <div class="dice dice-second-face" id="diceFace2">
+                        <span class="dice-dot"></span>
+                        <span class="dice-dot"></span>
+                    </div>
+                    
+                    <div class="dice dice-third-face" id="diceFace3">
+                        <span class="dice-dot"></span>
+                        <span class="dice-dot"></span>
+                        <span class="dice-dot"></span>
+                    </div>
+                    
+                    <div class="dice dice-fourth-face" id="diceFace4">
+                        <div class="dice-column">
+                            <span class="dice-dot"></span>
+                            <span class="dice-dot"></span>
+                        </div>
+                        <div class="dice-column">
+                            <span class="dice-dot"></span>
+                            <span class="dice-dot"></span>
+                        </div>
+                    </div>
+
+                    <div class="dice dice-fifth-face" id="diceFace5">
+                        <div class="dice-column">
+                            <span class="dice-dot"></span>
+                            <span class="dice-dot"></span>
+                        </div>
+                        <div class="dice-column">
+                            <span class="dice-dot"></span>
+                        </div>
+                        <div class="dice-column">
+                            <span class="dice-dot"></span>
+                            <span class="dice-dot"></span>
+                        </div>
+                    </div>
+
+                    <div class="dice dice-sixth-face" id="diceFace6">
+                        <div class="dice-column">
+                            <span class="dice-dot"></span>
+                            <span class="dice-dot"></span>
+                            <span class="dice-dot"></span>
+                        </div>
+                        <div class="dice-column">
+                            <span class="dice-dot"></span>
+                            <span class="dice-dot"></span>
+                            <span class="dice-dot"></span>
+                        </div>
+                    </div>
+                </div>
+                <span id="spanStatus"></span>
+            </div>
+
+            <div class="card-action center">
+                <a class="btn" href="#" id="btnRoll">Lanzar</a>
+              </div>
+          </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

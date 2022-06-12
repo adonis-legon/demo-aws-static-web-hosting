@@ -1,0 +1,90 @@
+.jenga-circle-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.jenga-circle{
+    height: 100px;
+    width: 100px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 50%;
+}
+
+.dice-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.dice {
+    padding: 4px;
+    background-color: white;
+    width: 100px;
+    height: 100px;
+    border-radius: 10%;
+    border-style: solid;
+    border-color: black;
+  }
+  .dice-dot{
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color:black;
+  }
+
+  .dice-no-face{
+
+  }
+
+  .dice-first-face {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dice-second-face{
+    display: flex ;
+    justify-content: space-between;
+  }
+  
+  .dice-second-face .dice-dot:nth-of-type(2) {
+    align-self: flex-end;
+  }
+  
+  .dice-third-face {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .dice-third-face .dice-dot:nth-of-type(1) {
+    align-self :flex-end;
+  }
+  
+  .dice-third-face .dice-dot:nth-of-type(2) {
+    align-self :center;
+  }
+  
+  
+  .dice-fourth-face , .dice-sixth-face, .dice-fifth-face{
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .dice-fourth-face .dice-column , .dice-sixth-face .dice-column, .dice-fifth-face .dice-column{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .dice-fifth-face .dice-column:nth-of-type(2) {
+    justify-content: center;
+  }
