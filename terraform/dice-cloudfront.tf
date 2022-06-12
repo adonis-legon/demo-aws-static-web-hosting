@@ -1,15 +1,17 @@
 # Cloudfront distribution for main s3 site.
+resource "aws_cloudfront_origin_access_identity" "dice_s3_distribution_identity" {
+  comment = "Cloudfront Distribution Identity for dice_s3 bucket access"
+}
+
 resource "aws_cloudfront_distribution" "dice_s3_distribution" {
   origin {
-    domain_name = aws_s3_bucket.dice_bucket.website_endpoint
+    domain_name = aws_s3_bucket.dice_bucket.bucket_regional_domain_name
     origin_id   = "s3-dice.${var.bucket_name}"
 
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.dice_s3_distribution_identity.cloudfront_access_identity_path
     }
+
   }
 
   enabled             = true

@@ -1,7 +1,12 @@
 resource "aws_s3_bucket" "dice_bucket" {
   bucket = "dice.${var.bucket_name}"
-  acl    = "public-read"
-  policy = templatefile("templates/s3-policy.json", { bucket = "dice.${var.bucket_name}" })
+  acl    = "private"
+  policy = templatefile(
+    "templates/s3-policy.json", {
+      principal = aws_cloudfront_origin_access_identity.dice_s3_distribution_identity.iam_arn,
+      bucket    = "dice.${var.bucket_name}"
+    }
+  )
 
   cors_rule {
     allowed_headers = ["Authorization", "Content-Length"]
