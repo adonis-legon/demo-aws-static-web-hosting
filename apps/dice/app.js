@@ -3,6 +3,7 @@ const headerGame = document.getElementById("headerGame");
 const spanStatus = document.getElementById("spanStatus");
 const btnRoll = document.getElementById("btnRoll");
 const divJenga = document.getElementById("divJenga");
+const divCard = document.getElementById("divCard");
 
 var selectedGame = 1;
 const games = [
@@ -115,7 +116,8 @@ const changeGame = (game) => {
 };
 
 const rollDice = () => {
-  spanStatus.innerText = "Lanzando...";
+  startRoolDice();
+
   switch (selectedGame) {
     case 1:
       divJenga.classList.replace(currentJengaColor, emptyJengaColor);
@@ -129,6 +131,8 @@ const rollDice = () => {
         spanStatus.innerText = jengaColors[newColorPos].nameSpanish;
 
         currentJengaColor = newColor;
+
+        finishedRollDice();
       }, 500);
       break;
     case 2:
@@ -144,12 +148,24 @@ const rollDice = () => {
         );
         currentDice16FaceEl.style.display = "flex";
         spanStatus.innerText = dices16[currentDice16Face - 1].nameSpanish;
+
+        finishedRollDice();
       }, 500);
       break;
     default:
+      finishedRollDice();
       break;
   }
 };
+
+const startRoolDice = () => {
+  spanStatus.innerText = "Lanzando...";
+  btnRoll.classList.add('disabled');
+}
+
+const finishedRollDice = () => {
+  btnRoll.classList.remove('disabled');
+}
 
 document.addEventListener("DOMContentLoaded", (e) => {
   init();
@@ -159,6 +175,11 @@ btnRoll.addEventListener("click", (e) => {
   e.preventDefault();
   rollDice();
 });
+
+divCard.addEventListener("click", (e) => {
+  e.preventDefault();
+  rollDice();
+})
 
 selectGame.addEventListener("change", (e) => {
   changeGame(parseInt(e.target.value));
