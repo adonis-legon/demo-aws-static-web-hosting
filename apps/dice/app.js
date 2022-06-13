@@ -19,6 +19,8 @@ const games = [
   },
 ];
 
+var rollingDice = false;
+
 // Jenga
 var currentJengaColor,
   emptyJengaColor = "white";
@@ -115,8 +117,12 @@ const changeGame = (game) => {
   }
 };
 
-const rollDice = () => {
-  startRoolDice();
+const rollDice = (e) => {
+  e.preventDefault();
+  
+  if (!startRollDice()){
+    return;
+  }
 
   switch (selectedGame) {
     case 1:
@@ -132,7 +138,7 @@ const rollDice = () => {
 
         currentJengaColor = newColor;
 
-        finishedRollDice();
+        finishRollDice();
       }, 500);
       break;
     case 2:
@@ -149,22 +155,32 @@ const rollDice = () => {
         currentDice16FaceEl.style.display = "flex";
         spanStatus.innerText = dices16[currentDice16Face - 1].nameSpanish;
 
-        finishedRollDice();
+        finishRollDice();
       }, 500);
       break;
     default:
-      finishedRollDice();
+      finishRollDice();
       break;
   }
 };
 
-const startRoolDice = () => {
-  spanStatus.innerText = "Lanzando...";
-  btnRoll.classList.add('disabled');
+const startRollDice = () => {
+  if(!rollingDice){
+    rollingDice = true;
+    spanStatus.innerText = "Lanzando...";
+    btnRoll.classList.add('disabled');
+    return true;
+  }
+
+  return false;
 }
 
-const finishedRollDice = () => {
-  btnRoll.classList.remove('disabled');
+const finishRollDice = () => {
+  if(rollingDice){
+    btnRoll.classList.remove('disabled');
+    rollingDice = false;
+  }
+  
 }
 
 document.addEventListener("DOMContentLoaded", (e) => {
@@ -172,13 +188,11 @@ document.addEventListener("DOMContentLoaded", (e) => {
 });
 
 btnRoll.addEventListener("click", (e) => {
-  e.preventDefault();
-  rollDice();
+  rollDice(e);
 });
 
 divCard.addEventListener("click", (e) => {
-  e.preventDefault();
-  rollDice();
+  rollDice(e);
 })
 
 selectGame.addEventListener("change", (e) => {
