@@ -5,6 +5,7 @@ const headerGame = document.getElementById("headerGame");
 const spanStatus = document.getElementById("spanStatus");
 const btnRoll = document.getElementById("btnRoll");
 const divJenga = document.getElementById("divJenga");
+const divCard = document.getElementById("divCard");
 
 const RESET_CURRENT_MOVE = -1;
 
@@ -27,9 +28,9 @@ const games = {
     nameSpanish: "Dados 1-6",
     nextMoveStrategy: nextMoveStrategies.Simple_Random,
   },
-};
+];
 
-var selectedGame = games.Jenga;
+var rollingDice = false;
 
 // Jenga
 var currentJengaColor,
@@ -132,28 +133,13 @@ const changeGame = (game) => {
   }
 };
 
-var currentMove = RESET_CURRENT_MOVE;
-const getNextMove = (maxMoves, game) => {
-  switch (game.nextMoveStrategy) {
-    case nextMoveStrategies.Disctint_Random:
-      let availableMoves = [];
-      for (let i = 0; i < maxMoves; i++) {
-        if (i !== currentMove) {
-          availableMoves.push(i);
-        }
-      }
-
-      currentMove =
-        availableMoves[Math.floor(Math.random() * availableMoves.length)];
-      return currentMove;
-    case nextMoveStrategies.Simple_Random:
-    default:
-      return Math.floor(Math.random() * maxMoves);
+const rollDice = (e) => {
+  e.preventDefault();
+  
+  if (!startRollDice()){
+    return;
   }
-};
 
-const rollDice = () => {
-  spanStatus.innerText = "Lanzando...";
   switch (selectedGame) {
     case games.Jenga:
       divJenga.classList.replace(currentJengaColor, emptyJengaColor);
@@ -167,6 +153,8 @@ const rollDice = () => {
         spanStatus.innerText = jengaColors[newColorPos].nameSpanish;
 
         currentJengaColor = newColor;
+
+        finishRollDice();
       }, 500);
       break;
     case games.Dice1_6:
@@ -180,23 +168,48 @@ const rollDice = () => {
         currentDice1To6FaceEl = document.getElementById(
           "diceFace" + (currentDice1To6Face + 1)
         );
-        currentDice1To6FaceEl.style.display = "flex";
-        spanStatus.innerText = dices1To6[currentDice1To6Face].nameSpanish;
+        currentDice16FaceEl.style.display = "flex";
+        spanStatus.innerText = dices16[currentDice16Face - 1].nameSpanish;
+
+        finishRollDice();
       }, 500);
       break;
     default:
+      finishRollDice();
       break;
   }
 };
+
+const startRollDice = () => {
+  if(!rollingDice){
+    rollingDice = true;
+    spanStatus.innerText = "Lanzando...";
+    btnRoll.classList.add('disabled');
+    return true;
+  }
+
+  return false;
+}
+
+const finishRollDice = () => {
+  if(rollingDice){
+    btnRoll.classList.remove('disabled');
+    rollingDice = false;
+  }
+  
+}
 
 document.addEventListener("DOMContentLoaded", (e) => {
   init();
 });
 
 btnRoll.addEventListener("click", (e) => {
-  e.preventDefault();
-  rollDice();
+  rollDice(e);
 });
+
+divCard.addEventListener("click", (e) => {
+  rollDice(e);
+})
 
 selectGame.addEventListener("change", (e) => {
   changeGame(getGameById(parseInt(e.target.value)));
