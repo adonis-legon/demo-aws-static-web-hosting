@@ -1,22 +1,35 @@
+/*jslint es6 */
+
 const selectGame = document.getElementById("selectGame");
 const headerGame = document.getElementById("headerGame");
 const spanStatus = document.getElementById("spanStatus");
 const btnRoll = document.getElementById("btnRoll");
 const divJenga = document.getElementById("divJenga");
 
-var selectedGame = 1;
-const games = [
-  {
+const RESET_CURRENT_MOVE = -1;
+
+const nextMoveStrategies = {
+  Simple_Random: 1,
+  Disctint_Random: 2,
+};
+
+// Games
+const games = {
+  Jenga: {
+    id: 1,
     name: "jenga",
     nameSpanish: "Jenga",
-    value: 1,
+    nextMoveStrategy: nextMoveStrategies.Disctint_Random,
   },
-  {
+  Dice1_6: {
+    id: 2,
     name: "dice1_6",
     nameSpanish: "Dados 1-6",
-    value: 2,
+    nextMoveStrategy: nextMoveStrategies.Simple_Random,
   },
-];
+};
+
+var selectedGame = games.Jenga;
 
 // Jenga
 var currentJengaColor,
@@ -37,9 +50,9 @@ const jengaColors = [
 ];
 
 // Dice
-var currentDice16Face = 0;
-var currentDice16FaceEl = null;
-const dices16 = [
+var currentDice1To6Face = 0;
+var currentDice1To6FaceEl = null;
+const dices1To6 = [
   {
     nameSpanish: "Uno",
   },
@@ -63,23 +76,27 @@ const dices16 = [
 const init = () => {
   initMenu();
 
-  changeGame(1);
+  changeGame(games.Jenga);
 };
 
 const initMenu = () => {
   option = document.createElement("option");
   option.setAttribute("disabled", true);
   option.setAttribute("selected", true);
-  option.value = games[selectedGame - 1].value;
-  headerGame.innerHTML = option.innerHTML = games[selectedGame - 1].nameSpanish;
+  option.value = selectedGame.id;
+  headerGame.innerHTML = option.innerHTML = selectedGame.nameSpanish;
   selectGame.appendChild(option);
 
-  games.forEach((game) => {
+  Object.entries(games).forEach((kv) => {
     option = document.createElement("option");
-    option.value = game.value;
-    option.innerHTML = game.nameSpanish;
+    option.value = kv[1].id;
+    option.innerHTML = kv[1].nameSpanish;
     selectGame.appendChild(option);
   });
+};
+
+const getGameById = (id) => {
+  return Object.entries(games).filter((kv) => kv[1].id === id)[0][1];
 };
 
 const changeGame = (game) => {
@@ -94,35 +111,56 @@ const changeGame = (game) => {
     .forEach((dice) => (dice.style.display = "none"));
 
   selectedGame = game;
-  headerGame.innerHTML = games[selectedGame - 1].nameSpanish;
+  currentMove = RESET_CURRENT_MOVE;
+  headerGame.innerHTML = selectedGame.nameSpanish;
 
   switch (selectedGame) {
-    case 1:
+    case games.Jenga:
       divJenga.style.display = "block";
       divJenga.classList.replace(currentJengaColor, emptyJengaColor);
       currentJengaColor = emptyJengaColor;
       break;
-    case 2:
-      currentDice16Face = 0;
-      currentDice16FaceEl = document.getElementById(
-        "diceFace" + currentDice16Face
+    case games.Dice1_6:
+      currentDice1To6Face = 0;
+      currentDice1To6FaceEl = document.getElementById(
+        "diceFace" + currentDice1To6Face
       );
-      currentDice16FaceEl.style.display = "block";
+      currentDice1To6FaceEl.style.display = "block";
       break;
     default:
       break;
   }
 };
 
+var currentMove = RESET_CURRENT_MOVE;
+const getNextMove = (maxMoves, game) => {
+  switch (game.nextMoveStrategy) {
+    case nextMoveStrategies.Disctint_Random:
+      let availableMoves = [];
+      for (let i = 0; i < maxMoves; i++) {
+        if (i !== currentMove) {
+          availableMoves.push(i);
+        }
+      }
+
+      currentMove =
+        availableMoves[Math.floor(Math.random() * availableMoves.length)];
+      return currentMove;
+    case nextMoveStrategies.Simple_Random:
+    default:
+      return Math.floor(Math.random() * maxMoves);
+  }
+};
+
 const rollDice = () => {
   spanStatus.innerText = "Lanzando...";
   switch (selectedGame) {
-    case 1:
+    case games.Jenga:
       divJenga.classList.replace(currentJengaColor, emptyJengaColor);
       currentJengaColor = emptyJengaColor;
 
       setTimeout(() => {
-        newColorPos = Math.floor(Math.random() * jengaColors.length);
+        newColorPos = getNextMove(jengaColors.length, selectedGame);
         newColor = jengaColors[newColorPos].name;
 
         divJenga.classList.replace(currentJengaColor, newColor);
@@ -131,19 +169,19 @@ const rollDice = () => {
         currentJengaColor = newColor;
       }, 500);
       break;
-    case 2:
-      currentDice16FaceEl.style.display = "none";
+    case games.Dice1_6:
+      currentDice1To6FaceEl.style.display = "none";
       document.getElementById("diceFace0").style.display = "flex";
 
       setTimeout(() => {
         document.getElementById("diceFace0").style.display = "none";
 
-        currentDice16Face = Math.floor(Math.random() * 6) + 1;
-        currentDice16FaceEl = document.getElementById(
-          "diceFace" + currentDice16Face
+        currentDice1To6Face = getNextMove(dices1To6.length, selectedGame);
+        currentDice1To6FaceEl = document.getElementById(
+          "diceFace" + (currentDice1To6Face + 1)
         );
-        currentDice16FaceEl.style.display = "flex";
-        spanStatus.innerText = dices16[currentDice16Face - 1].nameSpanish;
+        currentDice1To6FaceEl.style.display = "flex";
+        spanStatus.innerText = dices1To6[currentDice1To6Face].nameSpanish;
       }, 500);
       break;
     default:
@@ -161,5 +199,5 @@ btnRoll.addEventListener("click", (e) => {
 });
 
 selectGame.addEventListener("change", (e) => {
-  changeGame(parseInt(e.target.value));
+  changeGame(getGameById(parseInt(e.target.value)));
 });
