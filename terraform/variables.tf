@@ -31,3 +31,7 @@ variable "bucket_name" {
 variable "common_tags" {
   description = "Common tags you want applied to all components."
 }
+
+variable "dice_app_cache_config" {
+  description = "Cache configurations for the Dice App"
+}
