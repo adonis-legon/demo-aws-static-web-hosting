@@ -12,7 +12,30 @@ const RESET_CURRENT_MOVE = -1;
 const nextMoveStrategies = {
   Simple_Random: 1,
   Disctint_Random: 2,
+  WeightedReservoirSampling: 3
 };
+
+function weightedReservoirSampling(items, k) {
+  const reservoir = [];
+  const weights = new Array(items.length).fill(1);
+  let totalWeight = items.length;
+
+  for (let i = 0; i < k; i++) {
+    const rand = Math.floor(Math.random() * totalWeight) + 1;
+    let weightSum = 0;
+    for (let j = 0; j < weights.length; j++) {
+      weightSum += weights[j];
+      if (rand <= weightSum) {
+        reservoir.push(items[j]);
+        weights[j]--;
+        totalWeight--;
+        break;
+      }
+    }
+  }
+
+  return reservoir;
+}
 
 // Games
 const games = {
@@ -20,13 +43,15 @@ const games = {
     id: 1,
     name: "jenga",
     nameSpanish: "Jenga",
-    nextMoveStrategy: nextMoveStrategies.Disctint_Random,
+    nextMoveStrategy: nextMoveStrategies.WeightedReservoirSampling,
+    moves: []
   },
   Dice1_6: {
     id: 2,
     name: "dice1_6",
     nameSpanish: "Dados 1-6",
     nextMoveStrategy: nextMoveStrategies.Simple_Random,
+    moves: []
   },
 };
 
@@ -52,6 +77,14 @@ const jengaColors = [
   },
 ];
 
+
+const JENGA_MAX_MOVES_GENERATED = 45;
+const jengaAvailableMoves = [];
+for (let i = 0; i < JENGA_MAX_MOVES_GENERATED; i++) {
+  jengaAvailableMoves.push((i % jengaColors.length) + 1);
+}
+games.Jenga.moves = weightedReservoirSampling(jengaAvailableMoves, jengaAvailableMoves.length);
+
 // Dice
 var currentDice1To6Face = 0;
 var currentDice1To6FaceEl = null;
@@ -76,6 +109,7 @@ const dices1To6 = [
   },
 ];
 
+// Game
 const init = () => {
   initMenu();
 
@@ -149,6 +183,12 @@ const getNextMove = (maxMoves, game) => {
       currentMove =
         availableMoves[Math.floor(Math.random() * availableMoves.length)];
       return currentMove;
+    case nextMoveStrategies.WeightedReservoirSampling:
+      if(game.moves.length <= 0){
+        game.moves = weightedReservoirSampling(jengaAvailableMoves, jengaAvailableMoves.length);
+      }
+      console.log(game.moves.length);
+      currentMove = game.moves.pop();
     case nextMoveStrategies.Simple_Random:
     default:
       return Math.floor(Math.random() * maxMoves);
